@@ -1,78 +1,41 @@
-/* ==========================================
-   1. ПЕРЕМЕННЫЕ (ЦВЕТА И СТИЛИ)
-   ========================================== */
 :root {
-    /* Темная тема (Вдохновлено Ремангой - Глубокий темный) */
-    --primary: #3d5afe; /* Акцентный синий */
-    --primary-hover: #5c6bc0;
-    
-    --bg-app: #111111; /* ФОН САЙТА */
-    --bg-panel: #1a1a1a; /* ФОН ПАНЕЛЕЙ */
-    --text-main: #f9fafb; /* БЕЛЫЙ ТЕКСТ */
-    --text-muted: #9ca3af; /* СЕРЫЙ ТЕКСТ */
-    
-    --input-bg: #212121;
-    --input-border: #333333;
-    
+    --primary: #3d5afe;
+    --primary-hover: #2979ff;
+    --bg-main: #0f0f12;
+    --bg-card: #16161a;
+    --bg-input: #1f1f24;
+    --border-color: #2a2a32;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
     --danger: #ff5252;
-    --danger-hover: #ff1744;
-    
-    --shadow-main: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-    --border-radius: 12px;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
-/* СВЕТЛАЯ ТЕМА (Override через JS) */
 [data-theme="light"] {
     --primary: #4361ee;
-    --bg-app: #f1f5f9;
-    --bg-panel: #ffffff;
-    --text-main: #111827;
-    --text-muted: #6b7280;
-    
-    --input-bg: #ffffff;
-    --input-border: #e5e7eb;
-    
-    --shadow-main: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --border-radius: 12px;
+    --primary-hover: #3a0ca3;
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-input: #f1f5f9;
+    --border-color: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
-/* ==========================================
-   2. БАЗОВЫЕ СТИЛИ
-   ========================================== */
 body { 
     font-family: 'Inter', sans-serif; 
     margin: 0;
-    background: var(--bg-app);
+    background-color: var(--bg-main);
     color: var(--text-main);
-    transition: background 0.3s ease, color 0.3s ease;
+    transition: all 0.3s ease;
     min-height: 100vh;
 }
 
-h2 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-top: 0;
-    margin-bottom: 25px;
-    letter-spacing: -0.5px;
-}
-
-button {
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-/* ==========================================
-   3. ВЕРСТКА (DASHBOARD LAYOUT)
-   ========================================== */
 .app-header {
-    background: var(--bg-panel);
-    padding: 15px 30px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 40px;
 }
 
 .header-content {
@@ -86,43 +49,49 @@ button {
 .logo {
     font-size: 22px;
     font-weight: 800;
-    color: var(--text-main);
+    letter-spacing: -0.5px;
 }
 
-.logo span {
-    color: var(--primary);
-}
+.logo span { color: var(--primary); }
 
-.app-main {
+.app-container {
     max-width: 1400px;
     margin: 40px auto;
     display: grid;
-    grid-template-columns: 350px 1fr; /* ДВЕ КОЛОНКИ: Форма и Сетка */
-    gap: 30px;
+    grid-template-columns: 360px 1fr;
+    gap: 40px;
     padding: 0 20px;
 }
 
-.panel {
-    background: var(--bg-panel);
+.card {
+    background-color: var(--bg-card);
     padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-main);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 40px;
 }
 
-/* ==========================================
-   4. КОМПОНЕНТЫ ФОРМЫ
-   ========================================== */
-input, select { 
-    width: 100%; 
-    padding: 14px 16px; 
-    margin-bottom: 15px; 
-    background-color: var(--input-bg);
+h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 18px;
+    background-color: var(--bg-input);
     color: var(--text-main);
-    border: 1px solid var(--input-border); 
-    border-radius: 8px; 
-    box-sizing: border-box; 
-    font-size: 15px;
-    transition: border-color 0.2s;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
 }
 
 input:focus, select:focus {
@@ -130,114 +99,144 @@ input:focus, select:focus {
     border-color: var(--primary);
 }
 
-.btn-primary { 
-    background-color: var(--primary); 
-    color: white; 
-    border: none; 
-    padding: 16px; 
-    width: 100%; 
-    font-size: 16px;
+.btn-add {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
     font-weight: 700;
-    box-shadow: 0 4px 6px -1px rgba(61, 90, 254, 0.3);
-}
-
-.btn-primary:hover { 
-    background-color: var(--primary-hover); 
-    transform: translateY(-1px);
-}
-
-.btn-theme-switcher {
-    background: transparent;
-    border: 1px solid var(--input-border);
-    color: var(--text-main);
-    padding: 8px 16px;
-    font-weight: 600;
-}
-
-/* ==========================================
-   5. СПИСОК КНИГ (ПРЕМИУМ КАРТОЧКИ)
-   ========================================== */
-.book-grid {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Авто-сетка */
-    gap: 20px;
-}
-
-li { 
-    background: var(--bg-panel); 
-    padding: 20px; 
-    border-radius: var(--border-radius);
-    border: 1px solid var(--input-border);
+    cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.btn-add:hover { 
+    background-color: var(--primary-hover); 
+    transform: translateY(-1px); 
+}
+
+.manga-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.manga-card {
+    background-color: var(--bg-card);
+    border-radius: 14px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column; /* Вертикальная карточка */
-    justify-content: space-between;
+    flex-direction: column;
     position: relative;
 }
 
-li:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+.manga-card:hover {
+    transform: translateY(-5px);
     border-color: var(--primary);
 }
 
-.book-title {
-    font-weight: 700;
-    font-size: 17px;
-    margin-bottom: 5px;
-    color: var(--text-main);
+.manga-cover {
+    width: 100%;
+    height: 300px;
+    background-color: #25252c;
+    position: relative;
+    overflow: hidden;
 }
 
-.book-author {
-    font-size: 14px;
+.manga-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.manga-card:hover .manga-cover img {
+    transform: scale(1.05);
+}
+
+.no-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 40px;
+    color: var(--text-muted);
+}
+
+.manga-details {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.manga-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.manga-author {
+    font-size: 13px;
     color: var(--text-muted);
     margin-bottom: 10px;
 }
 
-.book-rating {
-    color: #ffb703; /* Золото */
-    margin-bottom: 10px;
+.manga-rating {
+    font-size: 12px;
+    color: #fbbf24;
+    margin-bottom: 8px;
 }
 
-/* Профессиональные Бейджи Статуса */
 .badge {
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 20px;
+    align-self: flex-start;
+    font-size: 11px;
     font-weight: 700;
-    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
 }
 
-/* Цвета статусов - как на Реманге (soft transparent) */
-.status-Przeczytane { background: rgba(0, 230, 118, 0.1); color: #00e676; }
-.status-Czytam { background: rgba(255, 183, 3, 0.1); color: #ffb703; } 
-.status-W-planach { background: rgba(156, 163, 175, 0.1); color: #9ca3af; } 
+.status-Completed { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-Reading { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+.status-Plan-to-Read { background: rgba(100, 116, 139, 0.15); color: #94a3b8; }
 
-/* Кнопка удаления */
 .btn-delete {
-    background-color: transparent;
-    color: var(--text-muted);
-    border: 1px solid var(--input-border);
-    padding: 6px 12px;
-    font-weight: 600;
-    font-size: 12px;
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    z-index: 10;
+    backdrop-filter: blur(4px);
 }
 
-.btn-delete:hover {
-    background-color: var(--danger);
-    border-color: var(--danger);
-    color: white;
-}
+.manga-card:hover .btn-delete { opacity: 1; }
+.btn-delete:hover { background: var(--danger); }
 
-.loader {
-    grid-column: 1 / -1;
-    text-align: center;
-    color: var(--text-muted);
-    padding: 50px;
+.btn-theme {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
 }

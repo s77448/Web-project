@@ -1,37 +1,22 @@
-// ==========================================
-// 1. ЛОГИКА ТЕМНОЙ ТЕМЫ (PREMIUM)
-// ==========================================
 const toggleBtn = document.getElementById('theme-toggle');
-// По умолчанию ставим Темную
-const currentTheme = localStorage.getItem('theme') || 'dark'; 
+const currentTheme = localStorage.getItem('theme') || 'dark';
 
-// Устанавливаем тему при загрузке
-document.body.setAttribute('data-theme', currentTheme);
-updateToggleButtonText(currentTheme);
+document.documentElement.setAttribute('data-theme', currentTheme);
+if (toggleBtn) toggleBtn.innerText = currentTheme === 'dark' ? '☀️ Light mode' : '🌙 Dark mode';
 
 function toggleTheme() {
-    let theme = document.body.getAttribute('data-theme');
-    
+    let theme = document.documentElement.getAttribute('data-theme');
     if (theme === 'dark') {
-        document.body.setAttribute('data-theme', 'light');
+        document.documentElement.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
-        updateToggleButtonText('light');
+        if (toggleBtn) toggleBtn.innerText = '🌙 Dark mode';
     } else {
-        document.body.setAttribute('data-theme', 'dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        updateToggleButtonText('dark');
+        if (toggleBtn) toggleBtn.innerText = '☀️ Light mode';
     }
 }
 
-function updateToggleButtonText(theme) {
-    if (!toggleBtn) return;
-    toggleBtn.innerText = theme === 'dark' ? '☀️ Jasny tryb' : '🌙 Ciemny tryb';
-}
-
-// ==========================================
-// 2. ЛОГИКА БАЗЫ ДАННЫХ (SUPABASE)
-// ==========================================
-// ТВОИ КЛЮЧИ Supabase - НЕ МЕНЯЙ ИХ
 const supabaseUrl = 'https://ppumihanfubvfwjkdbwg.supabase.co';
 const supabaseKey = 'sb_publishable_wqCAK1uB-dN4fsfEH1giAg_ST34VdJg';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -43,70 +28,75 @@ async function fetchBooks() {
     
     if (books && books.length > 0) {
         books.forEach(book => {
-            const li = document.createElement('li');
+            const card = document.createElement('div');
+            card.className = 'manga-card';
             
-            const currentStatus = book.status || 'W planach'; 
-            const statusClass = currentStatus.replace(' ', '-'); 
+            const currentStatus = book.status || 'Plan to Read'; 
+            const statusClass = currentStatus.replace(/ /g, '-'); 
+            const ratingNumber = book.rating || 5;
+            const stars = '★'.repeat(ratingNumber) + '☆'.repeat(5 - ratingNumber);
 
-            const ratingNumber = book.rating || 5; // если оценки нет, пусть будет 5
-            const stars = '⭐'.repeat(ratingNumber);
+            const coverHTML = book.image_url 
+                ? `<img src="${book.image_url}" alt="${book.title}" onerror="this.parentElement.innerHTML='<div class=\\'no-cover\\'>📖</div>'">`
+                : `<div class="no-cover">📖</div>`;
 
-            li.innerHTML = `
-                <div class="book-info-top">
-                    <div class="book-title">${book.title}</div>
-                    <div class="book-author">✍️ ${book.author}</div>
+            card.innerHTML = `
+                <button class="btn-delete" onclick="deleteBook(${book.id})">Usuń</button>
+                <div class="manga-cover">
+                    ${coverHTML}
                 </div>
-                <div class="book-info-bottom">
-                    <div class="book-rating">${stars}</div>
+                <div class="manga-details">
+                    <div class="manga-title" title="${book.title}">${book.title}</div>
+                    <div class="manga-author">✍️ ${book.author}</div>
+                    <div class="manga-rating">${stars}</div>
                     <span class="badge status-${statusClass}">${currentStatus}</span>
                 </div>
-                <button class="btn-delete" onclick="deleteBook(${book.id})">Usuń</button>
             `;
-            list.appendChild(li);
+            list.appendChild(card);
         });
     } else if (books && books.length === 0) {
-        list.innerHTML = '<li style="grid-column: 1/-1; text-align: center; border: none; color: var(--text-muted);">Brak książek в базе. Добавь первую!</li>';
+        list.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">Baza jest pusta. Dodaj pierwszy tytuł!</div>';
     } else if (error) {
-        console.error("Błąd pobierania:", error);
+        console.error(error);
     }
 }
 
 async function addBook() {
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
+    const image_url = document.getElementById('image_url').value;
     const status = document.getElementById('status').value; 
     const rating = document.getElementById('rating').value; 
     
     if (!title || !author) {
-        alert('Proszę wypełnić oba pola!');
+        alert('Proszę wypełnić Title i Author!');
         return;
     }
 
-    const btn = document.querySelector('.btn-primary');
+    const btn = document.querySelector('.btn-add');
     const originalText = btn.innerText;
-    btn.innerText = 'Zapisywanie...';
+    btn.innerText = '...';
 
-    const { error } = await supabaseClient.from('books').insert([{ title: title, author: author, status: status, rating: parseInt(rating) }]);
+    const { error } = await supabaseClient.from('books').insert([
+        { title: title, author: author, image_url: image_url, status: status, rating: parseInt(rating) }
+    ]);
     
     btn.innerText = originalText;
 
     if (error) {
-        alert('Błąd dodawania. Sprawdź konsolę (F12).');
+        alert('Błąd dodawania. Sprawdź konsolę.');
         console.error(error);
     } else {
         document.getElementById('title').value = '';
         document.getElementById('author').value = '';
+        document.getElementById('image_url').value = '';
         fetchBooks(); 
     }
 }
 
 async function deleteBook(id) {
-    if(confirm('Na pewno chcesz usunąć tę książkę?')) {
-        const { error } = await supabaseClient
-            .from('books')
-            .delete()
-            .eq('id', id);
-            
+    if(confirm('Na pewno usunąć?')) {
+        const { error } = await supabaseClient.from('books').delete().eq('id', id);
         if (error) {
             alert('Błąd usuwania.');
             console.error(error);

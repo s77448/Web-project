@@ -1,33 +1,36 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vistula Bookmarks Pro</title>
+    <title>Manga Tracker Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body data-theme="dark"> <header class="app-header">
+<body>
+
+    <header class="app-header">
         <div class="header-content">
-            <div class="logo">Vistula<span>Bookmarks</span></div>
-            <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme-switcher">
-                🌙 Ciemny tryb
-            </button>
+            <div class="logo">Manga<span>Tracker</span></div>
+            <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">🌙 Dark mode</button>
         </div>
     </header>
 
-    <main class="app-main">
-        <section class="add-section">
-            <div class="panel">
-                <h2>Dodaj nowy tytuł 📚</h2>
-                <input type="text" id="title" placeholder="Tytuł książki lub mangi">
-                <input type="text" id="author" placeholder="Autor / Mangaka">
+    <main class="app-container">
+        
+        <section class="control-panel">
+            <div class="card">
+                <h2>Add Title / Dodaj tytuł 📚</h2>
+                
+                <input type="text" id="title" placeholder="Title / Tytuł">
+                <input type="text" id="author" placeholder="Author / Autor">
+                <input type="text" id="image_url" placeholder="Cover URL / Link do okładki">
                 
                 <select id="status">
-                    <option value="Przeczytane">Przeczytane</option>
-                    <option value="Czytam">Czytam</option>
-                    <option value="W planach">W planach</option>
+                    <option value="Reading">Reading / Czytam 🟡</option>
+                    <option value="Completed">Completed / Przeczytane 🟢</option>
+                    <option value="Plan to Read">Plan to Read / W planach ⚪</option>
                 </select>
 
                 <select id="rating">
@@ -38,18 +41,18 @@
                     <option value="1">⭐ (1/5)</option>
                 </select>
 
-                <button class="btn-primary" onclick="addBook()">Zapisz do bazy</button>
+                <button class="btn-add" onclick="addBook()">Save / Zapisz</button>
             </div>
         </section>
 
-        <section class="library-section">
-            <div class="panel">
-                <h2>Twoja biblioteka ✨</h2>
-                <ul id="book-list" class="book-grid">
-                    <div class="loader">Ładowanie biblioteki...</div>
-                </ul>
+        <section class="library-panel">
+            <div class="library-header">
+                <h2>Collection / Kolekcja ✨</h2>
+            </div>
+            <div id="book-list" class="manga-grid">
             </div>
         </section>
+
     </main>
 
     <script src="script.js"></script>
