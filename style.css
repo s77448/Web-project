@@ -251,3 +251,32 @@ input:focus, select:focus {
 .btn-theme:hover {
     background: var(--bg-input);
 }
+
+
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.library-header h2 {
+    margin-bottom: 0;
+
+.search-input {
+    width: 250px;
+    padding: 10px 14px;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}

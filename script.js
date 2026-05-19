@@ -145,4 +145,24 @@ async function deleteBook(id) {
     }
 }
 
+
+function filterManga() {
+
+    const searchText = document.getElementById('search-input').value.toLowerCase();
+
+    const cards = document.querySelectorAll('.manga-card');
+
+    cards.forEach(card => {
+
+        const title = card.querySelector('.manga-title').innerText.toLowerCase();
+        
+
+        if (title.includes(searchText)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
 fetchBooks();
