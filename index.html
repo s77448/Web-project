@@ -3,39 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Projekt - Lista Książek</title>
+    <title>Vistula Bookmarks Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">🌙 Ciemny tryb</button>
+<body data-theme="dark"> <header class="app-header">
+        <div class="header-content">
+            <div class="logo">Vistula<span>Bookmarks</span></div>
+            <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme-switcher">
+                🌙 Ciemny tryb
+            </button>
+        </div>
+    </header>
 
-        <h1>Dodaj książkę 📚</h1>
-        <input type="text" id="title" placeholder="Tytuł książki lub mangi">
-        <input type="text" id="author" placeholder="Autor / Mangaka">
-        
-        <select id="status">
-            <option value="Przeczytane">Przeczytane 🟢</option>
-            <option value="Czytam">Czytam 🟡</option>
-            <option value="W planach">W planach ⚪</option>
-        </select>
+    <main class="app-main">
+        <section class="add-section">
+            <div class="panel">
+                <h2>Dodaj nowy tytuł 📚</h2>
+                <input type="text" id="title" placeholder="Tytuł książki lub mangi">
+                <input type="text" id="author" placeholder="Autor / Mangaka">
+                
+                <select id="status">
+                    <option value="Przeczytane">Przeczytane</option>
+                    <option value="Czytam">Czytam</option>
+                    <option value="W planach">W planach</option>
+                </select>
 
-        <select id="rating">
-            <option value="5">Ocena: ⭐⭐⭐⭐⭐ (5/5)</option>
-            <option value="4">Ocena: ⭐⭐⭐⭐ (4/5)</option>
-            <option value="3">Ocena: ⭐⭐⭐ (3/5)</option>
-            <option value="2">Ocena: ⭐⭐ (2/5)</option>
-            <option value="1">Ocena: ⭐ (1/5)</option>
-        </select>
+                <select id="rating">
+                    <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                    <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                    <option value="3">⭐⭐⭐ (3/5)</option>
+                    <option value="2">⭐⭐ (2/5)</option>
+                    <option value="1">⭐ (1/5)</option>
+                </select>
 
-        <button class="btn-add" onclick="addBook()">Zapisz do bazy</button>
+                <button class="btn-primary" onclick="addBook()">Zapisz do bazy</button>
+            </div>
+        </section>
 
-        <h2>Twoja biblioteka:</h2>
-        <ul id="book-list">
-            </ul>
-    </div>
+        <section class="library-section">
+            <div class="panel">
+                <h2>Twoja biblioteka ✨</h2>
+                <ul id="book-list" class="book-grid">
+                    <div class="loader">Ładowanie biblioteki...</div>
+                </ul>
+            </div>
+        </section>
+    </main>
 
     <script src="script.js"></script>
 </body>

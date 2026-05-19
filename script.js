@@ -1,32 +1,37 @@
-
+// ==========================================
+// 1. ЛОГИКА ТЕМНОЙ ТЕМЫ (PREMIUM)
+// ==========================================
 const toggleBtn = document.getElementById('theme-toggle');
-const currentTheme = localStorage.getItem('theme');
+// По умолчанию ставим Темную
+const currentTheme = localStorage.getItem('theme') || 'dark'; 
 
-
-if (currentTheme) {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    if (currentTheme === 'dark' && toggleBtn) {
-        toggleBtn.innerText = '☀️ Jasny tryb';
-    }
-}
-
+// Устанавливаем тему при загрузке
+document.body.setAttribute('data-theme', currentTheme);
+updateToggleButtonText(currentTheme);
 
 function toggleTheme() {
-    let theme = document.documentElement.getAttribute('data-theme');
+    let theme = document.body.getAttribute('data-theme');
     
     if (theme === 'dark') {
-        document.documentElement.removeAttribute('data-theme');
+        document.body.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
-        if (toggleBtn) toggleBtn.innerText = '🌙 Ciemny tryb';
+        updateToggleButtonText('light');
     } else {
-        document.documentElement.setAttribute('data-theme', 'dark');
+        document.body.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        if (toggleBtn) toggleBtn.innerText = '☀️ Jasny tryb';
+        updateToggleButtonText('dark');
     }
 }
 
+function updateToggleButtonText(theme) {
+    if (!toggleBtn) return;
+    toggleBtn.innerText = theme === 'dark' ? '☀️ Jasny tryb' : '🌙 Ciemny tryb';
+}
 
-
+// ==========================================
+// 2. ЛОГИКА БАЗЫ ДАННЫХ (SUPABASE)
+// ==========================================
+// ТВОИ КЛЮЧИ Supabase - НЕ МЕНЯЙ ИХ
 const supabaseUrl = 'https://ppumihanfubvfwjkdbwg.supabase.co';
 const supabaseKey = 'sb_publishable_wqCAK1uB-dN4fsfEH1giAg_ST34VdJg';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -47,10 +52,12 @@ async function fetchBooks() {
             const stars = '⭐'.repeat(ratingNumber);
 
             li.innerHTML = `
-                <div class="book-info">
-                    <span class="book-title">${book.title}</span>
-                    <span class="book-author">✍️ ${book.author}</span>
-                    <span class="book-rating">${stars}</span>
+                <div class="book-info-top">
+                    <div class="book-title">${book.title}</div>
+                    <div class="book-author">✍️ ${book.author}</div>
+                </div>
+                <div class="book-info-bottom">
+                    <div class="book-rating">${stars}</div>
                     <span class="badge status-${statusClass}">${currentStatus}</span>
                 </div>
                 <button class="btn-delete" onclick="deleteBook(${book.id})">Usuń</button>
@@ -58,7 +65,7 @@ async function fetchBooks() {
             list.appendChild(li);
         });
     } else if (books && books.length === 0) {
-        list.innerHTML = '<li style="border-left: 4px solid var(--border-line); color: var(--text-muted); display: block;">Brak książek w bazie. Dodaj pierwszą!</li>';
+        list.innerHTML = '<li style="grid-column: 1/-1; text-align: center; border: none; color: var(--text-muted);">Brak książek в базе. Добавь первую!</li>';
     } else if (error) {
         console.error("Błąd pobierania:", error);
     }
@@ -75,7 +82,7 @@ async function addBook() {
         return;
     }
 
-    const btn = document.querySelector('.btn-add');
+    const btn = document.querySelector('.btn-primary');
     const originalText = btn.innerText;
     btn.innerText = 'Zapisywanie...';
 
@@ -108,6 +115,5 @@ async function deleteBook(id) {
         }
     }
 }
-
 
 fetchBooks();

@@ -1,245 +1,243 @@
+/* ==========================================
+   1. ПЕРЕМЕННЫЕ (ЦВЕТА И СТИЛИ)
+   ========================================== */
 :root {
+    /* Темная тема (Вдохновлено Ремангой - Глубокий темный) */
+    --primary: #3d5afe; /* Акцентный синий */
+    --primary-hover: #5c6bc0;
     
+    --bg-app: #111111; /* ФОН САЙТА */
+    --bg-panel: #1a1a1a; /* ФОН ПАНЕЛЕЙ */
+    --text-main: #f9fafb; /* БЕЛЫЙ ТЕКСТ */
+    --text-muted: #9ca3af; /* СЕРЫЙ ТЕКСТ */
+    
+    --input-bg: #212121;
+    --input-border: #333333;
+    
+    --danger: #ff5252;
+    --danger-hover: #ff1744;
+    
+    --shadow-main: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    --border-radius: 12px;
+}
+
+/* СВЕТЛАЯ ТЕМА (Override через JS) */
+[data-theme="light"] {
     --primary: #4361ee;
-    --primary-hover: #3a0ca3;
-    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    --card-bg: #ffffff;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --danger: #ef233c;
-    --danger-hover: #d90429;
+    --bg-app: #f1f5f9;
+    --bg-panel: #ffffff;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    
     --input-bg: #ffffff;
-    --input-border: #cbd5e1;
-    --list-bg: #f8fafc;
-    --list-hover: #f1f5f9;
-    --border-line: #e2e8f0;
+    --input-border: #e5e7eb;
+    
+    --shadow-main: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --border-radius: 12px;
 }
 
-
-[data-theme="dark"] {
-    --primary: #6366f1;
-    --primary-hover: #4f46e5;
-    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); /* Глубокий ночной фон */
-    --card-bg: #1e293b;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --danger: #ef4444;
-    --danger-hover: #dc2626;
-    --input-bg: #0f172a;
-    --input-border: #334155;
-    --list-bg: #334155;
-    --list-hover: #475569;
-    --border-line: #334155;
-}
-
+/* ==========================================
+   2. БАЗОВЫЕ СТИЛИ
+   ========================================== */
 body { 
     font-family: 'Inter', sans-serif; 
     margin: 0;
-    padding: 20px; 
-    background: var(--bg-gradient);
+    background: var(--bg-app);
+    color: var(--text-main);
+    transition: background 0.3s ease, color 0.3s ease;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    color: var(--text-main);
-    transition: background 0.4s ease, color 0.4s ease;
-}
-
-
-.container { 
-    background: var(--card-bg); 
-    width: 100%;
-    max-width: 480px; 
-    margin-top: 40px;
-    padding: 35px; 
-    border-radius: 20px; 
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); 
-    transition: background 0.4s ease;
-}
-
-
-.btn-theme {
-    background: transparent;
-    border: 1px solid var(--input-border);
-    color: var(--text-main);
-    padding: 8px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    float: right;
-    transition: all 0.3s ease;
-}
-
-.btn-theme:hover {
-    background: var(--list-bg);
-    transform: translateY(-2px);
-}
-
-h1 {
-    font-size: 26px;
-    font-weight: 800;
-    margin-top: 0;
-    margin-bottom: 25px;
-    color: var(--primary);
-    text-align: left;
 }
 
 h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-top: 35px;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--border-line);
-    padding-bottom: 10px;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 25px;
+    letter-spacing: -0.5px;
 }
 
+button {
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
 
+/* ==========================================
+   3. ВЕРСТКА (DASHBOARD LAYOUT)
+   ========================================== */
+.app-header {
+    background: var(--bg-panel);
+    padding: 15px 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.logo span {
+    color: var(--primary);
+}
+
+.app-main {
+    max-width: 1400px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 350px 1fr; /* ДВЕ КОЛОНКИ: Форма и Сетка */
+    gap: 30px;
+    padding: 0 20px;
+}
+
+.panel {
+    background: var(--bg-panel);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-main);
+}
+
+/* ==========================================
+   4. КОМПОНЕНТЫ ФОРМЫ
+   ========================================== */
 input, select { 
     width: 100%; 
     padding: 14px 16px; 
     margin-bottom: 15px; 
     background-color: var(--input-bg);
     color: var(--text-main);
-    border: 2px solid var(--input-border); 
-    border-radius: 12px; 
+    border: 1px solid var(--input-border); 
+    border-radius: 8px; 
     box-sizing: border-box; 
     font-size: 15px;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    transition: border-color 0.2s;
 }
 
 input:focus, select:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
 }
 
-input::placeholder {
-    color: var(--text-muted);
-}
-
-
-.btn-add { 
+.btn-primary { 
     background-color: var(--primary); 
     color: white; 
     border: none; 
-    border-radius: 12px; 
     padding: 16px; 
     width: 100%; 
     font-size: 16px;
     font-weight: 700;
-    cursor: pointer; 
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-    margin-top: 5px;
+    box-shadow: 0 4px 6px -1px rgba(61, 90, 254, 0.3);
 }
 
-.btn-add:hover { 
+.btn-primary:hover { 
     background-color: var(--primary-hover); 
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    transform: translateY(-1px);
 }
 
-.btn-add:active {
-    transform: translateY(0);
+.btn-theme-switcher {
+    background: transparent;
+    border: 1px solid var(--input-border);
+    color: var(--text-main);
+    padding: 8px 16px;
+    font-weight: 600;
 }
 
-
-ul { 
-    list-style-type: none; 
-    padding: 0; 
+/* ==========================================
+   5. СПИСОК КНИГ (ПРЕМИУМ КАРТОЧКИ)
+   ========================================== */
+.book-grid {
+    list-style: none;
+    padding: 0;
     margin: 0;
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Авто-сетка */
+    gap: 20px;
 }
-
-
-ul::-webkit-scrollbar { width: 6px; }
-ul::-webkit-scrollbar-track { background: transparent; }
-ul::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 10px; }
-ul::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 li { 
-    background: var(--list-bg); 
-    margin-bottom: 15px; 
-    padding: 18px; 
-    border-radius: 14px; 
-    border-left: 4px solid var(--primary);
-    transition: all 0.3s ease;
+    background: var(--bg-panel); 
+    padding: 20px; 
+    border-radius: var(--border-radius);
+    border: 1px solid var(--input-border);
+    transition: all 0.2s ease;
     display: flex;
+    flex-direction: column; /* Вертикальная карточка */
     justify-content: space-between;
-    align-items: center;
+    position: relative;
 }
 
 li:hover {
-    background: var(--list-hover);
-    transform: translateX(5px) scale(1.01);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
-.book-info {
-    flex-grow: 1;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    border-color: var(--primary);
 }
 
 .book-title {
-    display: block;
     font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 6px;
+    font-size: 17px;
+    margin-bottom: 5px;
     color: var(--text-main);
 }
 
 .book-author {
-    display: block;
     font-size: 14px;
     color: var(--text-muted);
+    margin-bottom: 10px;
 }
-
 
 .book-rating {
-    font-size: 13px;
-    margin-top: 6px;
-    margin-bottom: 4px;
-    color: #fbbf24; 
-    display: block;
-    letter-spacing: 2px;
+    color: #ffb703; /* Золото */
+    margin-bottom: 10px;
 }
 
-
+/* Профессиональные Бейджи Статуса */
 .badge {
     font-size: 12px;
     padding: 5px 10px;
-    border-radius: 8px;
+    border-radius: 20px;
     font-weight: 700;
-    margin-top: 8px;
     display: inline-block;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
-.status-Przeczytane { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-.status-Czytam { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); } 
-.status-W-planach { background: rgba(100, 116, 139, 0.15); color: #94a3b8; border: 1px solid rgba(100, 116, 139, 0.3); } 
+/* Цвета статусов - как на Реманге (soft transparent) */
+.status-Przeczytane { background: rgba(0, 230, 118, 0.1); color: #00e676; }
+.status-Czytam { background: rgba(255, 183, 3, 0.1); color: #ffb703; } 
+.status-W-planach { background: rgba(156, 163, 175, 0.1); color: #9ca3af; } 
 
-
+/* Кнопка удаления */
 .btn-delete {
     background-color: transparent;
-    color: var(--danger);
-    border: 1px solid var(--danger);
-    border-radius: 8px;
-    padding: 8px 12px;
+    color: var(--text-muted);
+    border: 1px solid var(--input-border);
+    padding: 6px 12px;
+    font-weight: 600;
     font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-left: 15px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
 }
 
 .btn-delete:hover {
     background-color: var(--danger);
+    border-color: var(--danger);
     color: white;
-    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+}
+
+.loader {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-muted);
+    padding: 50px;
 }
