@@ -1,0 +1,193 @@
+:root {
+    --primary: #4361ee;
+    --primary-hover: #3a0ca3;
+    --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    --card-bg: #ffffff;
+    --text-main: #2b2d42;
+    --text-muted: #8d99ae;
+    --danger: #ef233c;
+}
+
+body { 
+    font-family: 'Inter', sans-serif; 
+    margin: 0;
+    padding: 20px; 
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: var(--text-main);
+}
+
+.container { 
+    background: var(--card-bg); 
+    width: 100%;
+    max-width: 450px; 
+    margin-top: 40px;
+    padding: 30px; 
+    border-radius: 16px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: var(--primary);
+    text-align: center;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 35px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #f1f2f6;
+    padding-bottom: 10px;
+}
+
+input { 
+    width: 100%; 
+    padding: 14px 16px; 
+    margin-bottom: 15px; 
+    border: 2px solid #e2e8f0; 
+    border-radius: 10px; 
+    box-sizing: border-box; 
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+}
+
+.btn-add { 
+    background-color: var(--primary); 
+    color: white; 
+    border: none; 
+    border-radius: 10px; 
+    padding: 14px; 
+    width: 100%; 
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.btn-add:hover { 
+    background-color: var(--primary-hover); 
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(58, 12, 163, 0.4);
+}
+
+.btn-add:active {
+    transform: translateY(0);
+}
+
+ul { 
+    list-style-type: none; 
+    padding: 0; 
+    margin: 0;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+ul::-webkit-scrollbar { width: 6px; }
+ul::-webkit-scrollbar-track { background: #f1f2f6; border-radius: 10px; }
+ul::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+ul::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+li { 
+    background: #f8fafc; 
+    margin-bottom: 12px; 
+    padding: 16px; 
+    border-radius: 10px; 
+    border-left: 4px solid var(--primary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    transition: transform 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li:hover {
+    transform: translateX(5px);
+    background: #f1f5f9;
+}
+
+.book-info {
+    flex-grow: 1;
+}
+
+.book-title {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.book-author {
+    display: block;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.btn-delete {
+    background-color: transparent;
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 10px;
+}
+
+.btn-delete:hover {
+    background-color: var(--danger);
+    color: white;
+}
+
+
+select {
+    width: 100%; 
+    padding: 14px 16px; 
+    margin-bottom: 15px; 
+    border: 2px solid #e2e8f0; 
+    border-radius: 10px; 
+    box-sizing: border-box; 
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    background-color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+}
+
+
+.badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-top: 6px;
+    display: inline-block;
+}
+
+.status-Przeczytane { background: #d1fae5; color: #065f46; }
+.status-Czytam { background: #fef3c7; color: #92400e; } 
+.status-W-planach { background: #f1f5f9; color: #475569; } 
