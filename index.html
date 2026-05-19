@@ -11,13 +11,21 @@
 <body>
     <div class="container">
         <h1>Dodaj książkę 📚</h1>
-        <input type="text" id="title" placeholder="Tytuł książki">
-        <input type="text" id="author" placeholder="Autor">
+        <input type="text" id="title" placeholder="Tytuł książki lub mangi">
+        <input type="text" id="author" placeholder="Autor / Mangaka">
         
         <select id="status">
             <option value="Przeczytane">Przeczytane 🟢</option>
             <option value="Czytam">Czytam 🟡</option>
             <option value="W planach">W planach ⚪</option>
+        </select>
+
+        <select id="rating">
+            <option value="5">Ocena: ⭐⭐⭐⭐⭐ (5/5)</option>
+            <option value="4">Ocena: ⭐⭐⭐⭐ (4/5)</option>
+            <option value="3">Ocena: ⭐⭐⭐ (3/5)</option>
+            <option value="2">Ocena: ⭐⭐ (2/5)</option>
+            <option value="1">Ocena: ⭐ (1/5)</option>
         </select>
 
         <button class="btn-add" onclick="addBook()">Zapisz do bazy</button>

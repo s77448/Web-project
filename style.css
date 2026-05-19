@@ -191,3 +191,11 @@ select:focus {
 .status-Przeczytane { background: #d1fae5; color: #065f46; }
 .status-Czytam { background: #fef3c7; color: #92400e; } 
 .status-W-planach { background: #f1f5f9; color: #475569; } 
+
+
+.book-rating {
+    font-size: 13px;
+    margin-top: 4px;
+    color: #ffb703; 
+    display: block;
+}

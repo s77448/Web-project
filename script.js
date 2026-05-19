@@ -11,15 +11,18 @@ async function fetchBooks() {
         books.forEach(book => {
             const li = document.createElement('li');
             
-            
             const currentStatus = book.status || 'W planach'; 
-           
             const statusClass = currentStatus.replace(' ', '-'); 
+
+           
+            const ratingNumber = book.rating || 5; // если оценки нет, пусть будет 5
+            const stars = '⭐'.repeat(ratingNumber);
 
             li.innerHTML = `
                 <div class="book-info">
                     <span class="book-title">${book.title}</span>
                     <span class="book-author">✍️ ${book.author}</span>
+                    <span class="book-rating">${stars}</span>
                     <span class="badge status-${statusClass}">${currentStatus}</span>
                 </div>
                 <button class="btn-delete" onclick="deleteBook(${book.id})">Usuń</button>
@@ -36,7 +39,8 @@ async function fetchBooks() {
 async function addBook() {
     const title = document.getElementById('title').value;
     const author = document.getElementById('author').value;
-    const status = document.getElementById('status').value;
+    const status = document.getElementById('status').value; 
+    const rating = document.getElementById('rating').value; 
     
     if (!title || !author) {
         alert('Proszę wypełnić oba pola!');
@@ -47,8 +51,8 @@ async function addBook() {
     const originalText = btn.innerText;
     btn.innerText = 'Zapisywanie...';
 
-
-    const { error } = await supabaseClient.from('books').insert([{ title: title, author: author, status: status }]);
+   
+    const { error } = await supabaseClient.from('books').insert([{ title: title, author: author, status: status, rating: parseInt(rating) }]);
     
     btn.innerText = originalText;
 
