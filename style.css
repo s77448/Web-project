@@ -46,6 +46,11 @@ body {
     align-items: center;
 }
 
+.header-controls {
+    display: flex;
+    gap: 12px;
+}
+
 .logo {
     font-size: 22px;
     font-weight: 800;
@@ -164,7 +169,8 @@ input:focus, select:focus {
     align-items: center;
     justify-content: center;
     height: 100%;
-    font-size: 40px;
+    font-size: 14px;
+    font-weight: 600;
     color: var(--text-muted);
 }
 
@@ -239,4 +245,9 @@ input:focus, select:focus {
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-theme:hover {
+    background: var(--bg-input);
 }

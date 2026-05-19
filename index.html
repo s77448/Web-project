@@ -13,7 +13,10 @@
     <header class="app-header">
         <div class="header-content">
             <div class="logo">Manga<span>Tracker</span></div>
-            <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">🌙 Dark mode</button>
+            <div class="header-controls">
+                <button id="lang-toggle" onclick="toggleLang()" class="btn-theme">🇬🇧 EN</button>
+                <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">🌙 Dark mode</button>
+            </div>
         </div>
     </header>
 
@@ -21,16 +24,16 @@
         
         <section class="control-panel">
             <div class="card">
-                <h2>Add Title / Dodaj tytuł 📚</h2>
+                <h2 data-en="Add New Title" data-pl="Dodaj nowy tytuł">Add New Title</h2>
                 
-                <input type="text" id="title" placeholder="Title / Tytuł">
-                <input type="text" id="author" placeholder="Author / Autor">
-                <input type="text" id="image_url" placeholder="Cover URL / Link do okładki">
+                <input type="text" id="title" data-en-placeholder="Title" data-pl-placeholder="Tytuł" placeholder="Title">
+                <input type="text" id="author" data-en-placeholder="Author" data-pl-placeholder="Autor" placeholder="Author">
+                <input type="text" id="image_url" data-en-placeholder="Cover URL" data-pl-placeholder="Link do okładki" placeholder="Cover URL">
                 
                 <select id="status">
-                    <option value="Reading">Reading / Czytam 🟡</option>
-                    <option value="Completed">Completed / Przeczytane 🟢</option>
-                    <option value="Plan to Read">Plan to Read / W planach ⚪</option>
+                    <option value="Reading" data-en="Reading 🟡" data-pl="Czytam 🟡">Reading 🟡</option>
+                    <option value="Completed" data-en="Completed 🟢" data-pl="Przeczytane 🟢">Completed 🟢</option>
+                    <option value="Plan to Read" data-en="Plan to Read ⚪" data-pl="W planach ⚪">Plan to Read ⚪</option>
                 </select>
 
                 <select id="rating">
@@ -41,13 +44,13 @@
                     <option value="1">⭐ (1/5)</option>
                 </select>
 
-                <button class="btn-add" onclick="addBook()">Save / Zapisz</button>
+                <button class="btn-add" onclick="addBook()" data-en="Save to Database" data-pl="Zapisz do bazy">Save to Database</button>
             </div>
         </section>
 
         <section class="library-panel">
             <div class="library-header">
-                <h2>Collection / Kolekcja ✨</h2>
+                <h2 data-en="Your Collection" data-pl="Twoja kolekcja">Your Collection</h2>
             </div>
             <div id="book-list" class="manga-grid">
             </div>
