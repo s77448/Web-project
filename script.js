@@ -48,8 +48,11 @@ function applyLanguage() {
 
 const statusDict = {
     'Reading': { en: 'Reading', pl: 'Czytam' },
+    'Czytam': { en: 'Reading', pl: 'Czytam' },
     'Completed': { en: 'Completed', pl: 'Przeczytane' },
-    'Plan to Read': { en: 'Plan to Read', pl: 'W planach' }
+    'Przeczytane': { en: 'Completed', pl: 'Przeczytane' },
+    'Plan to Read': { en: 'Plan to Read', pl: 'W planach' },
+    'W planach': { en: 'Plan to Read', pl: 'W planach' }
 };
 
 const supabaseUrl = 'https://ppumihanfubvfwjkdbwg.supabase.co';
@@ -68,23 +71,51 @@ async function fetchBooks() {
             
             const rawStatus = book.status || 'Plan to Read'; 
             const statusText = statusDict[rawStatus] ? statusDict[rawStatus][currentLang] : rawStatus;
-            const statusClass = rawStatus.replace(/ /g, '-'); 
             
+            let statusClass = 'Plan-to-Read';
+            if (rawStatus === 'Completed' || rawStatus === 'Przeczytane') statusClass = 'Completed';
+            if (rawStatus === 'Reading' || rawStatus === 'Czytam') statusClass = 'Reading';
+
             const ratingNumber = book.rating || 5;
             const stars = '★'.repeat(ratingNumber) + '☆'.repeat(5 - ratingNumber);
+
+            const currentCh = book.chapter_current || 0;
+            const totalCh = book.chapter_total || 0;
+            
+            let progressPercent = 0;
+            if (totalCh > 0) {
+                progressPercent = Math.min(100, Math.round((currentCh / totalCh) * 100));
+            } else if (currentCh > 0) {
+                progressPercent = 10; 
+            }
+
+            const totalDisplay = totalCh > 0 ? totalCh : '?';
 
             const coverHTML = book.image_url 
                 ? `<img src="${book.image_url}" alt="${book.title}" onerror="this.parentElement.innerHTML='<div class=\\'no-cover\\'>No Cover</div>'">`
                 : `<div class="no-cover">No Cover</div>`;
 
             card.innerHTML = `
-                <button class="btn-delete" onclick="deleteBook(${book.id})" data-en="Delete" data-pl="Usuń">${currentLang === 'en' ? 'Delete' : 'Usuń'}</button>
+                <button class="btn-delete" onclick="deleteBook('${book.id}')">${currentLang === 'en' ? 'Delete' : 'Usuń'}</button>
                 <div class="manga-cover">
                     ${coverHTML}
                 </div>
                 <div class="manga-details">
                     <div class="manga-title" title="${book.title}">${book.title}</div>
                     <div class="manga-author">${book.author}</div>
+                    
+                    <div class="chapters-text">
+                        <span style="font-size: 12px; color: var(--text-muted);">${progressPercent}%</span>
+                        <div class="chapter-controls">
+                            <button class="btn-chapter" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, -1, '${rawStatus}')">-</button>
+                            <span>${currentCh} / ${totalDisplay}</span>
+                            <button class="btn-chapter" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, 1, '${rawStatus}')">+</button>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                    </div>
+
                     <div class="manga-rating">${stars}</div>
                     <span class="badge status-${statusClass}">${statusText.toUpperCase()}</span>
                 </div>
@@ -105,6 +136,8 @@ async function addBook() {
     const image_url = document.getElementById('image_url').value;
     const status = document.getElementById('status').value; 
     const rating = document.getElementById('rating').value; 
+    const chapter_current = document.getElementById('chapter_current').value;
+    const chapter_total = document.getElementById('chapter_total').value;
     
     if (!title || !author) {
         alert(currentLang === 'en' ? 'Please fill in Title and Author!' : 'Proszę wypełnić Tytuł i Autora!');
@@ -116,7 +149,15 @@ async function addBook() {
     btn.innerText = '...';
 
     const { error } = await supabaseClient.from('books').insert([
-        { title: title, author: author, image_url: image_url, status: status, rating: parseInt(rating) }
+        { 
+            title: title, 
+            author: author, 
+            image_url: image_url, 
+            status: status, 
+            rating: parseInt(rating),
+            chapter_current: parseInt(chapter_current) || 0,
+            chapter_total: parseInt(chapter_total) || 0
+        }
     ]);
     
     btn.innerText = originalText;
@@ -128,6 +169,8 @@ async function addBook() {
         document.getElementById('title').value = '';
         document.getElementById('author').value = '';
         document.getElementById('image_url').value = '';
+        document.getElementById('chapter_current').value = '';
+        document.getElementById('chapter_total').value = '';
         fetchBooks(); 
     }
 }
@@ -145,18 +188,45 @@ async function deleteBook(id) {
     }
 }
 
+async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
+    let newCh = currentCh + change;
+    
+    if (newCh < 0) newCh = 0;
+    if (totalCh > 0 && newCh > totalCh) newCh = totalCh;
+    
+    if (newCh === currentCh) return; 
+
+    let dbStatus = currentStatus;
+    if (dbStatus === 'Czytam') dbStatus = 'Reading';
+    if (dbStatus === 'Przeczytane') dbStatus = 'Completed';
+    if (dbStatus === 'W planach') dbStatus = 'Plan to Read';
+
+    if (totalCh > 0 && newCh === totalCh) {
+        dbStatus = 'Completed';
+    } else if (newCh > 0 && dbStatus === 'Plan to Read') {
+        dbStatus = 'Reading';
+    } else if (newCh < totalCh && dbStatus === 'Completed') {
+        dbStatus = 'Reading';
+    }
+
+    const { error } = await supabaseClient
+        .from('books')
+        .update({ chapter_current: newCh, status: dbStatus })
+        .eq('id', id);
+
+    if (error) {
+        console.error(error);
+    } else {
+        fetchBooks();
+    }
+}
 
 function filterManga() {
-
     const searchText = document.getElementById('search-input').value.toLowerCase();
-
     const cards = document.querySelectorAll('.manga-card');
 
     cards.forEach(card => {
-
         const title = card.querySelector('.manga-title').innerText.toLowerCase();
-        
-
         if (title.includes(searchText)) {
             card.style.display = 'flex';
         } else {
