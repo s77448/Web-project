@@ -1,3 +1,32 @@
+
+const toggleBtn = document.getElementById('theme-toggle');
+const currentTheme = localStorage.getItem('theme');
+
+
+if (currentTheme) {
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    if (currentTheme === 'dark' && toggleBtn) {
+        toggleBtn.innerText = '☀️ Jasny tryb';
+    }
+}
+
+
+function toggleTheme() {
+    let theme = document.documentElement.getAttribute('data-theme');
+    
+    if (theme === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        if (toggleBtn) toggleBtn.innerText = '🌙 Ciemny tryb';
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        if (toggleBtn) toggleBtn.innerText = '☀️ Jasny tryb';
+    }
+}
+
+
+
 const supabaseUrl = 'https://ppumihanfubvfwjkdbwg.supabase.co';
 const supabaseKey = 'sb_publishable_wqCAK1uB-dN4fsfEH1giAg_ST34VdJg';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -14,7 +43,6 @@ async function fetchBooks() {
             const currentStatus = book.status || 'W planach'; 
             const statusClass = currentStatus.replace(' ', '-'); 
 
-           
             const ratingNumber = book.rating || 5; // если оценки нет, пусть будет 5
             const stars = '⭐'.repeat(ratingNumber);
 
@@ -30,7 +58,7 @@ async function fetchBooks() {
             list.appendChild(li);
         });
     } else if (books && books.length === 0) {
-        list.innerHTML = '<li style="border-left: 4px solid #cbd5e1; color: #8d99ae; display: block;">Brak książek w bazie. Dodaj pierwszą!</li>';
+        list.innerHTML = '<li style="border-left: 4px solid var(--border-line); color: var(--text-muted); display: block;">Brak książek w bazie. Dodaj pierwszą!</li>';
     } else if (error) {
         console.error("Błąd pobierania:", error);
     }
@@ -51,7 +79,6 @@ async function addBook() {
     const originalText = btn.innerText;
     btn.innerText = 'Zapisywanie...';
 
-   
     const { error } = await supabaseClient.from('books').insert([{ title: title, author: author, status: status, rating: parseInt(rating) }]);
     
     btn.innerText = originalText;
@@ -81,5 +108,6 @@ async function deleteBook(id) {
         }
     }
 }
+
 
 fetchBooks();
