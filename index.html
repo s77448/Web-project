@@ -15,7 +15,7 @@
             <div class="logo">Manga<span>Tracker</span></div>
             <div class="header-controls">
                 <button id="lang-toggle" onclick="toggleLang()" class="btn-theme">🇬🇧 EN</button>
-                <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">🌙 Dark mode</button>
+                <button id="theme-toggle" onclick="toggleTheme()" class="btn-theme">☀️ Light mode</button>
             </div>
         </div>
     </header>
@@ -30,6 +30,11 @@
                 <input type="text" id="author" data-en-placeholder="Author" data-pl-placeholder="Autor" placeholder="Author">
                 <input type="text" id="image_url" data-en-placeholder="Cover URL" data-pl-placeholder="Link do okładki" placeholder="Cover URL">
                 
+                <div class="chapters-row">
+                    <input type="number" id="chapter_current" min="0" data-en-placeholder="Current Ch." data-pl-placeholder="Rozdz. obecny" placeholder="Current Ch.">
+                    <input type="number" id="chapter_total" min="0" data-en-placeholder="Total Ch." data-pl-placeholder="Rozdz. wszystkich" placeholder="Total Ch.">
+                </div>
+
                 <select id="status">
                     <option value="Reading" data-en="Reading 🟡" data-pl="Czytam 🟡">Reading 🟡</option>
                     <option value="Completed" data-en="Completed 🟢" data-pl="Przeczytane 🟢">Completed 🟢</option>
@@ -48,7 +53,7 @@
             </div>
         </section>
 
-<section class="library-panel">
+        <section class="library-panel">
             <div class="library-header">
                 <h2 data-en="Your Collection" data-pl="Twoja kolekcja">Your Collection</h2>
                 <input type="text" id="search-input" oninput="filterManga()" class="search-input" data-en-placeholder="🔍 Search title..." data-pl-placeholder="🔍 Szukaj tytułu..." placeholder="🔍 Search title...">

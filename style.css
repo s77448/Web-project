@@ -104,6 +104,11 @@ input:focus, select:focus {
     border-color: var(--primary);
 }
 
+.chapters-row {
+    display: flex;
+    gap: 12px;
+}
+
 .btn-add {
     width: 100%;
     padding: 14px;
@@ -120,6 +125,35 @@ input:focus, select:focus {
 .btn-add:hover { 
     background-color: var(--primary-hover); 
     transform: translateY(-1px); 
+}
+
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.library-header h2 {
+    margin-bottom: 0;
+}
+
+.search-input {
+    width: 250px;
+    padding: 10px 14px;
+    background-color: var(--bg-input);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    margin-bottom: 0;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
 }
 
 .manga-grid {
@@ -193,7 +227,65 @@ input:focus, select:focus {
 .manga-author {
     font-size: 13px;
     color: var(--text-muted);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.chapters-text {
+    font-size: 13px;
+    color: var(--text-main);
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.chapter-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-input);
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.btn-chapter {
+    background: transparent;
+    color: var(--text-main);
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-chapter:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.progress-container {
+    width: 100%;
+    background-color: var(--bg-input);
+    border-radius: 4px;
+    height: 6px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), #00e676);
+    width: 0%;
+    transition: width 0.3s ease;
 }
 
 .manga-rating {
@@ -250,33 +342,4 @@ input:focus, select:focus {
 
 .btn-theme:hover {
     background: var(--bg-input);
-}
-
-
-.library-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-}
-
-.library-header h2 {
-    margin-bottom: 0;
-
-.search-input {
-    width: 250px;
-    padding: 10px 14px;
-    background-color: var(--bg-input);
-    color: var(--text-main);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    margin-bottom: 0;
-}
-
-.search-input:focus {
-    outline: none;
-    border-color: var(--primary);
 }
