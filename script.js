@@ -276,7 +276,7 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
 }
 
 function openDetails(id) {
-    const book = localBooks.find(b => b.id === id);
+    const book = localBooks.find(b => String(b.id) === String(id));
     if (!book) return;
 
     const panel = document.getElementById('details-panel');
