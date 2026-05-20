@@ -30,8 +30,11 @@ body {
     color: var(--text-main);
     transition: all 0.3s ease;
     min-height: 100vh;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-
 .app-header {
     background-color: var(--bg-card);
     border-bottom: 1px solid var(--border-color);
@@ -97,6 +100,10 @@ input, select, textarea {
     font-size: 14px;
     box-sizing: border-box;
     transition: all 0.2s ease;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 textarea {
@@ -250,6 +257,7 @@ input:focus, select:focus, textarea:focus {
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
+    user-select: none;
 }
 
 .chapter-controls {
