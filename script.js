@@ -252,6 +252,12 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
         dbStatus = 'Reading';
     }
 
+    const book = localBooks.find(b => String(b.id) === String(id));
+    if (book) {
+        book.chapter_current = newCh;
+        book.status = dbStatus;
+    }
+
     let progressPercent = 0;
     if (totalCh > 0) {
         progressPercent = Math.min(100, Math.round((newCh / totalCh) * 100));
@@ -298,9 +304,51 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
     if (error) console.error(error);
 }
 
+    const card = document.getElementById(`card-${id}`);
+    if (card) {
+        const percentSpan = card.querySelector('.progress-percent-text');
+        if (percentSpan) percentSpan.innerText = `${progressPercent}%`;
+
+        const progressBar = card.querySelector('.progress-bar');
+        if (progressBar) progressBar.style.width = `${progressPercent}%`;
+
+        const totalDisplay = totalCh > 0 ? totalCh : '?';
+        const chapterCountSpan = card.querySelector('.chapter-count-text');
+        if (chapterCountSpan) {
+            chapterCountSpan.innerText = `${newCh} / ${totalDisplay}`;
+            chapterCountSpan.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, 'prompt', '${dbStatus}')`);
+        }
+
+        const btnMinus = card.querySelector('.btn-minus');
+        const btnPlus = card.querySelector('.btn-plus');
+        if (btnMinus) btnMinus.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, -1, '${dbStatus}')`);
+        if (btnPlus) btnPlus.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, 1, '${dbStatus}')`);
+
+        const badge = card.querySelector('.badge');
+        if (badge) {
+            let statusClass = 'Plan-to-Read';
+            if (dbStatus === 'Completed') statusClass = 'Completed';
+            if (dbStatus === 'Reading') statusClass = 'Reading';
+            const statusText = statusDict[dbStatus] ? statusDict[dbStatus][currentLang] : dbStatus;
+            badge.className = `badge status-${statusClass}`;
+            badge.innerText = statusText.toUpperCase();
+        }
+    }
+
+    const { error } = await supabaseClient
+        .from('books')
+        .update({ chapter_current: newCh, status: dbStatus })
+        .eq('id', id);
+
+    if (error) console.error(error);
+}
+
 async function toggleFavorite(e, id, currentFav) {
     if (e) e.stopPropagation(); 
     const newFav = !currentFav;
+    
+    const book = localBooks.find(b => String(b.id) === String(id));
+    if (book) book.is_favorite = newFav;
     
     const card = document.getElementById(`card-${id}`);
     if (card) {
@@ -312,6 +360,11 @@ async function toggleFavorite(e, id, currentFav) {
             favBtn.setAttribute('onclick', `toggleFavorite(event, '${id}', ${newFav})`);
         }
     }
+
+    const { error } = await supabaseClient.from('books').update({ is_favorite: newFav }).eq('id', id);
+    if (error) console.error(error);
+    applyFilters();
+}
 
     const { error } = await supabaseClient.from('books').update({ is_favorite: newFav }).eq('id', id);
     if (error) console.error(error);
