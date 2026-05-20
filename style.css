@@ -524,3 +524,57 @@ input:focus, select:focus, textarea:focus {
         height: 340px;
     }
 }
+
+.library-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-input);
+    padding: 4px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.btn-filter {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.btn-filter:hover {
+    color: var(--text-main);
+}
+
+.btn-filter.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 10px rgba(61, 90, 254, 0.3);
+}
+
+@media (max-width: 1024px) {
+    .library-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .library-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

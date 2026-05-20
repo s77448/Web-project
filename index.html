@@ -59,7 +59,15 @@
         <section class="library-panel">
             <div class="library-header">
                 <h2 data-en="Your Collection" data-pl="Twoja kolekcja">Your Collection</h2>
-                <input type="text" id="search-input" oninput="filterManga()" class="search-input" data-en-placeholder="🔍 Search title..." data-pl-placeholder="🔍 Szukaj tytułu..." placeholder="🔍 Search title...">
+                <div class="library-controls">
+                    <div class="filter-group">
+                        <button class="btn-filter active" onclick="setFilter('All')" data-en="All" data-pl="Wszystkie">All</button>
+                        <button class="btn-filter" onclick="setFilter('Reading')" data-en="Reading" data-pl="Czytam">Reading</button>
+                        <button class="btn-filter" onclick="setFilter('Completed')" data-en="Completed" data-pl="Przeczytane">Completed</button>
+                        <button class="btn-filter" onclick="setFilter('Plan to Read')" data-en="Plan to Read" data-pl="W planach">Plan to Read</button>
+                    </div>
+                    <input type="text" id="search-input" oninput="applyFilters()" class="search-input" data-en-placeholder="🔍 Search title..." data-pl-placeholder="🔍 Szukaj tytułu..." placeholder="🔍 Search title...">
+                </div>
             </div>
             <div id="book-list" class="manga-grid">
             </div>

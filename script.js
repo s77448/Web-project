@@ -125,9 +125,10 @@ async function fetchBooks() {
             `;
             list.appendChild(card);
         });
+        applyFilters(); 
     } else if (books && books.length === 0) {
         localBooks = [];
-        const emptyMsg = currentLang === 'en' ? 'Database is empty. Add your first title!' : 'Baza jest pusta. Dodaj первый tytuł!';
+        const emptyMsg = currentLang === 'en' ? 'Database is empty. Add your first title!' : 'Baza jest pusta. Dodaj pierwszy tytuł!';
         list.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">${emptyMsg}</div>`;
     } else if (error) {
         console.error(error);
@@ -190,7 +191,7 @@ async function deleteBook(id) {
     if(confirm(msg)) {
         const { error } = await supabaseClient.from('books').delete().eq('id', id);
         if (error) {
-            alert(currentLang === 'en' ? 'Delete error.' : 'Błąd usuвания.');
+            alert(currentLang === 'en' ? 'Delete error.' : 'Błąd usuwania.');
             console.error(error);
         } else {
             fetchBooks();
@@ -346,13 +347,40 @@ function closeDetails() {
     document.body.style.overflow = 'auto'; 
 }
 
-function filterManga() {
+let currentFilter = 'All';
+
+function setFilter(status) {
+    currentFilter = status;
+    
+    document.querySelectorAll('.btn-filter').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('onclick').includes(`'${status}'`)) {
+            btn.classList.add('active');
+        }
+    });
+    
+    applyFilters();
+}
+
+function applyFilters() {
     const searchText = document.getElementById('search-input').value.toLowerCase();
     const cards = document.querySelectorAll('.manga-card');
 
     cards.forEach(card => {
         const title = card.querySelector('.manga-title').innerText.toLowerCase();
-        if (title.includes(searchText)) {
+        const badge = card.querySelector('.badge');
+        
+        let cardStatus = 'All';
+        if (badge) {
+            if (badge.classList.contains('status-Reading')) cardStatus = 'Reading';
+            if (badge.classList.contains('status-Completed')) cardStatus = 'Completed';
+            if (badge.classList.contains('status-Plan-to-Read')) cardStatus = 'Plan to Read';
+        }
+
+        const matchesSearch = title.includes(searchText);
+        const matchesFilter = currentFilter === 'All' || currentFilter === cardStatus;
+
+        if (matchesSearch && matchesFilter) {
             card.style.display = 'flex';
         } else {
             card.style.display = 'none';
