@@ -289,6 +289,17 @@ function openDetails(id) {
 
     const reviewContent = book.review ? book.review : noReviewText;
     
+    const rawStatus = book.status || 'Plan to Read'; 
+    const statusText = statusDict[rawStatus] ? statusDict[rawStatus][currentLang] : rawStatus;
+    let statusClass = 'Plan-to-Read';
+    if (rawStatus === 'Completed' || rawStatus === 'Przeczytane') statusClass = 'Completed';
+    if (rawStatus === 'Reading' || rawStatus === 'Czytam') statusClass = 'Reading';
+
+    const ratingNumber = book.rating || 5;
+    const currentCh = book.chapter_current || 0;
+    const totalCh = book.chapter_total || 0;
+    const totalDisplay = totalCh > 0 ? totalCh : '?';
+    
     const coverHTML = book.image_url 
         ? `<img src="${book.image_url}" alt="${book.title}">`
         : `<div class="no-cover">No Cover</div>`;
@@ -308,6 +319,13 @@ function openDetails(id) {
                 <div class="details-info">
                     <div class="details-title">${book.title}</div>
                     <div class="details-author">${book.author}</div>
+                    
+                    <div class="details-meta">
+                        <span class="meta-badge">⭐ ${ratingNumber}/5</span>
+                        <span class="meta-badge status-${statusClass}">${statusText.toUpperCase()}</span>
+                        <span class="meta-badge">🔖 ${currentCh} / ${totalDisplay}</span>
+                    </div>
+
                     ${readButtonHTML}
                     <div class="review-section">
                         <div class="review-title">${reviewTitle}</div>
