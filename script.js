@@ -139,6 +139,8 @@ async function addBook() {
     const rating = document.getElementById('rating').value; 
     const chapter_current = document.getElementById('chapter_current').value;
     const chapter_total = document.getElementById('chapter_total').value;
+    const read_url = document.getElementById('read_url').value;
+    const review = document.getElementById('review').value;
     
     if (!title || !author) {
         alert(currentLang === 'en' ? 'Please fill in Title and Author!' : 'Proszę wypełnić Tytuł i Autora!');
@@ -157,7 +159,9 @@ async function addBook() {
             status: status, 
             rating: parseInt(rating),
             chapter_current: parseInt(chapter_current) || 0,
-            chapter_total: parseInt(chapter_total) || 0
+            chapter_total: parseInt(chapter_total) || 0,
+            read_url: read_url,
+            review: review
         }
     ]);
     
@@ -172,6 +176,8 @@ async function addBook() {
         document.getElementById('image_url').value = '';
         document.getElementById('chapter_current').value = '';
         document.getElementById('chapter_total').value = '';
+        document.getElementById('read_url').value = '';
+        document.getElementById('review').value = '';
         fetchBooks(); 
     }
 }
