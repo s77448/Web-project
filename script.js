@@ -143,7 +143,7 @@ async function fetchBooks() {
         applyFilters(); 
     } else if (books && books.length === 0) {
         localBooks = [];
-        const emptyMsg = currentLang === 'en' ? 'Database is empty. Add your first title!' : 'Baza jest pusta. Dodaj pierwszy tytuł!';
+        const emptyMsg = currentLang === 'en' ? 'Database is empty. Add your first title!' : 'Baza jest pusta. Dodaj первый tytuł!';
         list.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">${emptyMsg}</div>`;
     } else if (error) {
         console.error(error);
@@ -304,45 +304,6 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
     if (error) console.error(error);
 }
 
-    const card = document.getElementById(`card-${id}`);
-    if (card) {
-        const percentSpan = card.querySelector('.progress-percent-text');
-        if (percentSpan) percentSpan.innerText = `${progressPercent}%`;
-
-        const progressBar = card.querySelector('.progress-bar');
-        if (progressBar) progressBar.style.width = `${progressPercent}%`;
-
-        const totalDisplay = totalCh > 0 ? totalCh : '?';
-        const chapterCountSpan = card.querySelector('.chapter-count-text');
-        if (chapterCountSpan) {
-            chapterCountSpan.innerText = `${newCh} / ${totalDisplay}`;
-            chapterCountSpan.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, 'prompt', '${dbStatus}')`);
-        }
-
-        const btnMinus = card.querySelector('.btn-minus');
-        const btnPlus = card.querySelector('.btn-plus');
-        if (btnMinus) btnMinus.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, -1, '${dbStatus}')`);
-        if (btnPlus) btnPlus.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, 1, '${dbStatus}')`);
-
-        const badge = card.querySelector('.badge');
-        if (badge) {
-            let statusClass = 'Plan-to-Read';
-            if (dbStatus === 'Completed') statusClass = 'Completed';
-            if (dbStatus === 'Reading') statusClass = 'Reading';
-            const statusText = statusDict[dbStatus] ? statusDict[dbStatus][currentLang] : dbStatus;
-            badge.className = `badge status-${statusClass}`;
-            badge.innerText = statusText.toUpperCase();
-        }
-    }
-
-    const { error } = await supabaseClient
-        .from('books')
-        .update({ chapter_current: newCh, status: dbStatus })
-        .eq('id', id);
-
-    if (error) console.error(error);
-}
-
 async function toggleFavorite(e, id, currentFav) {
     if (e) e.stopPropagation(); 
     const newFav = !currentFav;
@@ -360,11 +321,6 @@ async function toggleFavorite(e, id, currentFav) {
             favBtn.setAttribute('onclick', `toggleFavorite(event, '${id}', ${newFav})`);
         }
     }
-
-    const { error } = await supabaseClient.from('books').update({ is_favorite: newFav }).eq('id', id);
-    if (error) console.error(error);
-    applyFilters();
-}
 
     const { error } = await supabaseClient.from('books').update({ is_favorite: newFav }).eq('id', id);
     if (error) console.error(error);
@@ -479,7 +435,7 @@ function toggleDescriptionLength() {
         btn.innerText = currentLang === 'en' ? 'Show less 🔼' : 'Zwiń 🔼';
     } else {
         desc.classList.add('collapsed');
-        btn.innerText = currentLang === 'en' ? 'Show more 🔽' : 'Rozwiń więcej 🔽';
+        btn.innerText = currentLang === 'en' ? 'Show more 🔽' : 'Rozwiń больше 🔽';
     }
 }
 
