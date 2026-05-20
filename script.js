@@ -68,6 +68,7 @@ async function fetchBooks() {
         books.forEach(book => {
             const card = document.createElement('div');
             card.className = 'manga-card';
+            card.id = `card-${book.id}`; 
             
             const rawStatus = book.status || 'Plan to Read'; 
             const statusText = statusDict[rawStatus] ? statusDict[rawStatus][currentLang] : rawStatus;
@@ -105,11 +106,11 @@ async function fetchBooks() {
                     <div class="manga-author">${book.author}</div>
                     
                     <div class="chapters-text">
-                        <span style="font-size: 12px; color: var(--text-muted);">${progressPercent}%</span>
+                        <span class="progress-percent-text" style="font-size: 12px; color: var(--text-muted);">${progressPercent}%</span>
                         <div class="chapter-controls">
-                            <button class="btn-chapter" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, -1, '${rawStatus}')">-</button>
-                            <span>${currentCh} / ${totalDisplay}</span>
-                            <button class="btn-chapter" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, 1, '${rawStatus}')">+</button>
+                            <button class="btn-chapter btn-minus" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, -1, '${rawStatus}')">-</button>
+                            <span class="chapter-count-text" style="cursor: pointer;" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, 'prompt', '${rawStatus}')" title="${currentLang === 'en' ? 'Click to edit' : 'Kliknij, aby edytować'}">${currentCh} / ${totalDisplay}</span>
+                            <button class="btn-chapter btn-plus" onclick="updateChapter('${book.id}', ${currentCh}, ${totalCh}, 1, '${rawStatus}')">+</button>
                         </div>
                     </div>
                     <div class="progress-container">
@@ -189,7 +190,17 @@ async function deleteBook(id) {
 }
 
 async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
-    let newCh = currentCh + change;
+    let newCh = currentCh;
+    
+    if (change === 'prompt') {
+        const msg = currentLang === 'en' ? 'Enter current chapter:' : 'Wprowadź obecny rozdział:';
+        const input = prompt(msg, currentCh);
+        if (input === null || input.trim() === '') return;
+        newCh = parseInt(input);
+        if (isNaN(newCh)) return;
+    } else {
+        newCh = currentCh + change;
+    }
     
     if (newCh < 0) newCh = 0;
     if (totalCh > 0 && newCh > totalCh) newCh = totalCh;
@@ -209,16 +220,50 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
         dbStatus = 'Reading';
     }
 
+    let progressPercent = 0;
+    if (totalCh > 0) {
+        progressPercent = Math.min(100, Math.round((newCh / totalCh) * 100));
+    } else if (newCh > 0) {
+        progressPercent = 10; 
+    }
+
+    const card = document.getElementById(`card-${id}`);
+    if (card) {
+        const percentSpan = card.querySelector('.progress-percent-text');
+        if (percentSpan) percentSpan.innerText = `${progressPercent}%`;
+
+        const progressBar = card.querySelector('.progress-bar');
+        if (progressBar) progressBar.style.width = `${progressPercent}%`;
+
+        const totalDisplay = totalCh > 0 ? totalCh : '?';
+        const chapterCountSpan = card.querySelector('.chapter-count-text');
+        if (chapterCountSpan) {
+            chapterCountSpan.innerText = `${newCh} / ${totalDisplay}`;
+            chapterCountSpan.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, 'prompt', '${dbStatus}')`);
+        }
+
+        const btnMinus = card.querySelector('.btn-minus');
+        const btnPlus = card.querySelector('.btn-plus');
+        if (btnMinus) btnMinus.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, -1, '${dbStatus}')`);
+        if (btnPlus) btnPlus.setAttribute('onclick', `updateChapter('${id}', ${newCh}, ${totalCh}, 1, '${dbStatus}')`);
+
+        const badge = card.querySelector('.badge');
+        if (badge) {
+            let statusClass = 'Plan-to-Read';
+            if (dbStatus === 'Completed') statusClass = 'Completed';
+            if (dbStatus === 'Reading') statusClass = 'Reading';
+            const statusText = statusDict[dbStatus] ? statusDict[dbStatus][currentLang] : dbStatus;
+            badge.className = `badge status-${statusClass}`;
+            badge.innerText = statusText.toUpperCase();
+        }
+    }
+
     const { error } = await supabaseClient
         .from('books')
         .update({ chapter_current: newCh, status: dbStatus })
         .eq('id', id);
 
-    if (error) {
-        console.error(error);
-    } else {
-        fetchBooks();
-    }
+    if (error) console.error(error);
 }
 
 function filterManga() {
