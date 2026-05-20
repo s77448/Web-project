@@ -98,6 +98,15 @@ async function fetchBooks() {
                 ? `<img src="${book.image_url}" alt="${book.title}">`
                 : `<div class="no-cover">No Cover</div>`;
 
+            let tagsHTML = '';
+            if (book.tags && book.tags.trim() !== '') {
+                tagsHTML = '<div class="manga-tags">';
+                book.tags.split(',').forEach(t => {
+                    if (t.trim()) tagsHTML += `<span class="tag-item">#${t.trim()}</span>`;
+                });
+                tagsHTML += '</div>';
+            }
+
             card.innerHTML = `
                 <button class="btn-delete" onclick="deleteBook('${book.id}')">${currentLang === 'en' ? 'Delete' : 'Usuń'}</button>
                 <div class="manga-cover" onclick="openDetails('${book.id}')">
@@ -106,6 +115,7 @@ async function fetchBooks() {
                 <div class="manga-details">
                     <div class="manga-title" title="${book.title}" onclick="openDetails('${book.id}')">${book.title}</div>
                     <div class="manga-author">${book.author}</div>
+                    ${tagsHTML}
                     
                     <div class="chapters-text">
                         <span class="progress-percent-text" style="font-size: 12px; color: var(--text-muted);">${progressPercent}%</span>
@@ -144,6 +154,8 @@ async function addBook() {
     const chapter_current = document.getElementById('chapter_current').value;
     const chapter_total = document.getElementById('chapter_total').value;
     const read_url = document.getElementById('read_url').value;
+    const tags = document.getElementById('tags').value;
+    const description = document.getElementById('description').value;
     const review = document.getElementById('review').value;
     
     if (!title || !author) {
@@ -165,6 +177,8 @@ async function addBook() {
             chapter_current: parseInt(chapter_current) || 0,
             chapter_total: parseInt(chapter_total) || 0,
             read_url: read_url,
+            tags: tags,
+            description: description,
             review: review
         }
     ]);
@@ -181,6 +195,8 @@ async function addBook() {
         document.getElementById('chapter_current').value = '';
         document.getElementById('chapter_total').value = '';
         document.getElementById('read_url').value = '';
+        document.getElementById('tags').value = '';
+        document.getElementById('description').value = '';
         document.getElementById('review').value = '';
         fetchBooks(); 
     }
@@ -285,9 +301,12 @@ function openDetails(id) {
     
     const backText = currentLang === 'en' ? '⬅ Back to Collection' : '⬅ Powrót do kolekcji';
     const readText = currentLang === 'en' ? '📖 Read Now' : '📖 Czytaj teraz';
+    const descriptionTitle = currentLang === 'en' ? 'Synopsis' : 'Opis fabuły';
+    const noDescriptionText = currentLang === 'en' ? 'No description available.' : 'Brak opisu fabuły.';
     const reviewTitle = currentLang === 'en' ? 'Your Review' : 'Twoja opinia';
     const noReviewText = currentLang === 'en' ? 'No review yet.' : 'Brak opinii.';
 
+    const descriptionContent = book.description ? book.description : noDescriptionText;
     const reviewContent = book.review ? book.review : noReviewText;
     
     const rawStatus = book.status || 'Plan to Read'; 
@@ -304,6 +323,15 @@ function openDetails(id) {
     const coverHTML = book.image_url 
         ? `<img src="${book.image_url}" alt="${book.title}">`
         : `<div class="no-cover">No Cover</div>`;
+
+    let detailsTagsHTML = '';
+    if (book.tags && book.tags.trim() !== '') {
+        detailsTagsHTML = '<div class="details-tags">';
+        book.tags.split(',').forEach(t => {
+            if (t.trim()) detailsTagsHTML += `<span class="details-tag-item">#${t.trim()}</span>`;
+        });
+        detailsTagsHTML += '</div>';
+    }
 
     const readButtonHTML = book.read_url 
         ? `<a href="${book.read_url}" target="_blank" class="btn-read-now">${readText}</a>`
@@ -325,6 +353,13 @@ function openDetails(id) {
                         <span class="meta-badge">⭐ ${ratingNumber}/5</span>
                         <span class="meta-badge status-${statusClass}">${statusText.toUpperCase()}</span>
                         <span class="meta-badge">🔖 ${currentCh} / ${totalDisplay}</span>
+                    </div>
+
+                    ${detailsTagsHTML}
+
+                    <div class="description-section">
+                        <div class="description-title">${descriptionTitle}</div>
+                        <div class="description-text">${descriptionContent}</div>
                     </div>
 
                     ${readButtonHTML}
