@@ -56,7 +56,7 @@ const statusDict = {
     'W planach': { en: 'Plan to Read', pl: 'W planach' }
 };
 
-const supabaseUrl = 'https://ppumihanfubvfwjkdbwg.supabase.co';
+const supabaseUrl = 'https://ppumihanvubvfwjkdbwg.supabase.co';
 const supabaseKey = 'sb_publishable_wqCAK1uB-dN4fsfEH1giAg_ST34VdJg';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -71,6 +71,7 @@ async function fetchBooks() {
             const card = document.createElement('div');
             card.className = 'manga-card';
             card.id = `card-${book.id}`; 
+            card.dataset.favorite = book.is_favorite || false;
             
             const rawStatus = book.status || 'Plan to Read'; 
             const statusText = statusDict[rawStatus] ? statusDict[rawStatus][currentLang] : rawStatus;
@@ -107,8 +108,12 @@ async function fetchBooks() {
                 tagsHTML += '</div>';
             }
 
+            const favClass = book.is_favorite ? 'btn-fav is-active' : 'btn-fav';
+            const favHeart = book.is_favorite ? '❤️' : '🤍';
+
             card.innerHTML = `
                 <button class="btn-delete" onclick="deleteBook('${book.id}')">${currentLang === 'en' ? 'Delete' : 'Usuń'}</button>
+                <button class="${favClass}" onclick="toggleFavorite(event, '${book.id}', ${book.is_favorite || false})">${favHeart}</button>
                 <div class="manga-cover" onclick="openDetails('${book.id}')">
                     ${coverHTML}
                 </div>
@@ -179,7 +184,8 @@ async function addBook() {
             read_url: read_url,
             tags: tags,
             description: description,
-            review: review
+            review: review,
+            is_favorite: false
         }
     ]);
     
@@ -292,6 +298,26 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
     if (error) console.error(error);
 }
 
+async function toggleFavorite(e, id, currentFav) {
+    if (e) e.stopPropagation(); 
+    const newFav = !currentFav;
+    
+    const card = document.getElementById(`card-${id}`);
+    if (card) {
+        card.dataset.favorite = newFav;
+        const favBtn = card.querySelector('.btn-fav');
+        if (favBtn) {
+            favBtn.className = newFav ? 'btn-fav is-active' : 'btn-fav';
+            favBtn.innerText = newFav ? '❤️' : '🤍';
+            favBtn.setAttribute('onclick', `toggleFavorite(event, '${id}', ${newFav})`);
+        }
+    }
+
+    const { error } = await supabaseClient.from('books').update({ is_favorite: newFav }).eq('id', id);
+    if (error) console.error(error);
+    applyFilters();
+}
+
 function openDetails(id) {
     const book = localBooks.find(b => String(b.id) === String(id));
     if (!book) return;
@@ -337,6 +363,8 @@ function openDetails(id) {
         ? `<a href="${book.read_url}" target="_blank" class="btn-read-now">${readText}</a>`
         : '';
 
+    const detailFavHeart = book.is_favorite ? '❤️' : '🤍';
+
     panel.innerHTML = `
         <div class="details-bg" style="background-image: url('${bgImg}')"></div>
         <div class="details-container">
@@ -346,7 +374,10 @@ function openDetails(id) {
                     ${coverHTML}
                 </div>
                 <div class="details-info">
-                    <div class="details-title">${book.title}</div>
+                    <div class="details-title-row">
+                        <div class="details-title">${book.title}</div>
+                        <button class="btn-day-fav btn-details-fav" onclick="toggleDetailsFavorite('${book.id}', ${book.is_favorite || false})">${detailFavHeart}</button>
+                    </div>
                     <div class="details-author">${book.author}</div>
                     
                     <div class="details-meta">
@@ -359,7 +390,8 @@ function openDetails(id) {
 
                     <div class="description-section">
                         <div class="description-title">${descriptionTitle}</div>
-                        <div class="description-text">${descriptionContent}</div>
+                        <div id="details-desc-text" class="description-text collapsed">${descriptionContent}</div>
+                        <button id="btn-toggle-desc" style="display: none; background: transparent; border: none; color: var(--primary); font-weight: 600; margin-top: 10px; cursor: pointer; padding: 0; font-size: 13px; font-family: 'Inter', sans-serif;"></button>
                     </div>
 
                     ${readButtonHTML}
@@ -374,6 +406,57 @@ function openDetails(id) {
     
     panel.style.display = 'block';
     document.body.style.overflow = 'hidden'; 
+
+    const descElement = document.getElementById('details-desc-text');
+    const toggleBtn = document.getElementById('btn-toggle-desc');
+    if (descElement && descElement.scrollHeight > 75) {
+        toggleBtn.style.display = 'block';
+        toggleBtn.innerText = currentLang === 'en' ? 'Show more 🔽' : 'Rozwiń więcej 🔽';
+        toggleBtn.onclick = toggleDescriptionLength;
+    } else if (descElement) {
+        descElement.classList.remove('collapsed');
+    }
+}
+
+function toggleDescriptionLength() {
+    const desc = document.getElementById('details-desc-text');
+    const btn = document.getElementById('btn-toggle-desc');
+    if (desc.classList.contains('collapsed')) {
+        desc.classList.remove('collapsed');
+        btn.innerText = currentLang === 'en' ? 'Show less 🔼' : 'Zwiń 🔼';
+    } else {
+        desc.classList.add('collapsed');
+        btn.innerText = currentLang === 'en' ? 'Show more 🔽' : 'Rozwiń więcej 🔽';
+    }
+}
+
+async function toggleDetailsFavorite(id, currentFav) {
+    const newFav = !currentFav;
+    const btn = document.querySelector('.btn-details-fav');
+    if (btn) btn.innerText = newFav ? '❤️' : '🤍';
+    
+    const book = localBooks.find(b => String(b.id) === String(id));
+    if (book) book.is_favorite = newFav;
+
+    const card = document.getElementById(`card-${id}`);
+    if (card) {
+        card.dataset.favorite = newFav;
+        const favBtn = card.querySelector('.btn-fav');
+        if (favBtn) {
+            favBtn.className = newFav ? 'btn-fav is-active' : 'btn-fav';
+            favBtn.innerText = newFav ? '❤️' : '🤍';
+            favBtn.setAttribute('onclick', `toggleFavorite(event, '${id}', ${newFav})`);
+        }
+    }
+
+    const btnDetails = document.querySelector('.btn-details-fav');
+    if (btnDetails) {
+        btnDetails.setAttribute('onclick', `toggleDetailsFavorite('${id}', ${newFav})`);
+    }
+
+    const { error } = await supabaseClient.from('books').update({ is_favorite: newFav }).eq('id', id);
+    if (error) console.error(error);
+    applyFilters();
 }
 
 function closeDetails() {
@@ -404,6 +487,7 @@ function applyFilters() {
     cards.forEach(card => {
         const title = card.querySelector('.manga-title').innerText.toLowerCase();
         const badge = card.querySelector('.badge');
+        const isFavorite = card.dataset.favorite === 'true';
         
         let cardStatus = 'All';
         if (badge) {
@@ -413,7 +497,8 @@ function applyFilters() {
         }
 
         const matchesSearch = title.includes(searchText);
-        const matchesFilter = currentFilter === 'All' || currentFilter === cardStatus;
+        const matchesFilter = currentFilter === 'All' || 
+                              (currentFilter === 'Favorites' ? isFavorite : currentFilter === cardStatus);
 
         if (matchesSearch && matchesFilter) {
             card.style.display = 'flex';
