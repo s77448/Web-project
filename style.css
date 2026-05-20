@@ -363,7 +363,26 @@ input:focus, select:focus, textarea:focus {
     backdrop-filter: blur(4px);
 }
 
-.manga-card:hover .btn-delete { opacity: 1; }
+.btn-fav {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    padding: 6px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.manga-card:hover .btn-delete, .manga-card:hover .btn-fav, .btn-fav.is-active { 
+    opacity: 1; 
+}
+
 .btn-delete:hover { background: var(--danger); }
 
 .btn-theme {
@@ -455,11 +474,35 @@ input:focus, select:focus, textarea:focus {
     flex-grow: 1;
 }
 
+.details-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 8px;
+}
+
 .details-title {
     font-size: 36px;
     font-weight: 800;
-    margin-bottom: 8px;
     letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.btn-details-fav {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1;
+}
+
+.btn-details-fav:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(1.05);
 }
 
 .details-author {
@@ -525,6 +568,13 @@ input:focus, select:focus, textarea:focus {
     font-size: 15px;
     line-height: 1.6;
     color: #e5e7eb;
+}
+
+.description-text.collapsed {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .btn-read-now {
