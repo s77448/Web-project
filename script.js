@@ -3,6 +3,7 @@ const toggleLangBtn = document.getElementById('lang-toggle');
 
 let currentTheme = localStorage.getItem('theme') || 'dark';
 let currentLang = localStorage.getItem('lang') || 'en';
+let localBooks = []; 
 
 document.documentElement.setAttribute('data-theme', currentTheme);
 updateThemeBtn();
@@ -65,6 +66,7 @@ async function fetchBooks() {
     list.innerHTML = '';
     
     if (books && books.length > 0) {
+        localBooks = books; 
         books.forEach(book => {
             const card = document.createElement('div');
             card.className = 'manga-card';
@@ -93,16 +95,16 @@ async function fetchBooks() {
             const totalDisplay = totalCh > 0 ? totalCh : '?';
 
             const coverHTML = book.image_url 
-                ? `<img src="${book.image_url}" alt="${book.title}" onerror="this.parentElement.innerHTML='<div class=\\'no-cover\\'>No Cover</div>'">`
+                ? `<img src="${book.image_url}" alt="${book.title}">`
                 : `<div class="no-cover">No Cover</div>`;
 
             card.innerHTML = `
                 <button class="btn-delete" onclick="deleteBook('${book.id}')">${currentLang === 'en' ? 'Delete' : 'Usuń'}</button>
-                <div class="manga-cover">
+                <div class="manga-cover" onclick="openDetails('${book.id}')">
                     ${coverHTML}
                 </div>
                 <div class="manga-details">
-                    <div class="manga-title" title="${book.title}">${book.title}</div>
+                    <div class="manga-title" title="${book.title}" onclick="openDetails('${book.id}')">${book.title}</div>
                     <div class="manga-author">${book.author}</div>
                     
                     <div class="chapters-text">
@@ -124,7 +126,8 @@ async function fetchBooks() {
             list.appendChild(card);
         });
     } else if (books && books.length === 0) {
-        const emptyMsg = currentLang === 'en' ? 'Database is empty. Add your first title!' : 'Baza jest pusta. Dodaj pierwszy tytuł!';
+        localBooks = [];
+        const emptyMsg = currentLang === 'en' ? 'Database is empty. Add your first title!' : 'Baza jest pusta. Dodaj первый tytuł!';
         list.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px;">${emptyMsg}</div>`;
     } else if (error) {
         console.error(error);
@@ -187,7 +190,7 @@ async function deleteBook(id) {
     if(confirm(msg)) {
         const { error } = await supabaseClient.from('books').delete().eq('id', id);
         if (error) {
-            alert(currentLang === 'en' ? 'Delete error.' : 'Błąd usuwania.');
+            alert(currentLang === 'en' ? 'Delete error.' : 'Błąd usuвания.');
             console.error(error);
         } else {
             fetchBooks();
@@ -270,6 +273,59 @@ async function updateChapter(id, currentCh, totalCh, change, currentStatus) {
         .eq('id', id);
 
     if (error) console.error(error);
+}
+
+function openDetails(id) {
+    const book = localBooks.find(b => b.id === id);
+    if (!book) return;
+
+    const panel = document.getElementById('details-panel');
+    const bgImg = book.image_url ? book.image_url : '';
+    
+    const backText = currentLang === 'en' ? '⬅ Back to Collection' : '⬅ Powrót do kolekcji';
+    const readText = currentLang === 'en' ? '📖 Read Now' : '📖 Czytaj teraz';
+    const reviewTitle = currentLang === 'en' ? 'Your Review' : 'Twoja opinia';
+    const noReviewText = currentLang === 'en' ? 'No review yet.' : 'Brak opinii.';
+
+    const reviewContent = book.review ? book.review : noReviewText;
+    
+    const coverHTML = book.image_url 
+        ? `<img src="${book.image_url}" alt="${book.title}">`
+        : `<div class="no-cover">No Cover</div>`;
+
+    const readButtonHTML = book.read_url 
+        ? `<a href="${book.read_url}" target="_blank" class="btn-read-now">${readText}</a>`
+        : '';
+
+    panel.innerHTML = `
+        <div class="details-bg" style="background-image: url('${bgImg}')"></div>
+        <div class="details-container">
+            <button class="btn-back" onclick="closeDetails()">${backText}</button>
+            <div class="details-main">
+                <div class="details-cover">
+                    ${coverHTML}
+                </div>
+                <div class="details-info">
+                    <div class="details-title">${book.title}</div>
+                    <div class="details-author">${book.author}</div>
+                    ${readButtonHTML}
+                    <div class="review-section">
+                        <div class="review-title">${reviewTitle}</div>
+                        <div class="review-text">${reviewContent}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    panel.style.display = 'block';
+    document.body.style.overflow = 'hidden'; 
+}
+
+function closeDetails() {
+    const panel = document.getElementById('details-panel');
+    panel.style.display = 'none';
+    document.body.style.overflow = 'auto'; 
 }
 
 function filterManga() {
