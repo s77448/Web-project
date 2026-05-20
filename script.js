@@ -56,7 +56,7 @@ const statusDict = {
     'W planach': { en: 'Plan to Read', pl: 'W planach' }
 };
 
-const supabaseUrl = 'https://ppumihanvubvfwjkdbwg.supabase.co';
+const supabaseUrl = 'https://ppumihanfubvfwjkdbwg.supabase.co';
 const supabaseKey = 'sb_publishable_wqCAK1uB-dN4fsfEH1giAg_ST34VdJg';
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
